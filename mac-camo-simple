@@ -1,0 +1,279 @@
+#!/bin/bash
+# MAC-Camo
+# Disguise your MAC Address as that of any manufacturer as you want
+# Made by keeganjk
+# v1.0
+
+# Defines dir
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Defines foreground colors
+black=''
+red=''
+green=''
+yellow=''
+blue=''
+pink=''
+skyBlue=''
+white=''
+grey=''
+
+# Defines background colors
+bgBlack=''
+bgRed=''
+bgGreen=''
+bgYellow=''
+bgBlue=''
+bgPink=''
+bgSkyBlue=''
+bgWhite=''
+bgGrey=''
+
+# Defines other special effects
+cols=''
+lines=''
+bold=''
+reverseColor=''
+underlineStart=''
+underlineFinish=''
+standoutStart=''
+standoutFinish=''
+stopAllFX=''
+
+# Defines hexadecimal chars
+hexchars="0123456789ABCDEF"
+
+function start {
+
+# Renders ANSI art
+$stopAllFX; $bgBlack; $bold; $red; clear
+sleep .2; echo "#\   /# /###\ /#####        /##### /###\ #\   /# /###\\"
+sleep .2; echo "##\ /## #   # #             #      #   # ##\ /## #   #"
+sleep .2; echo "# ### # ##### #      $($white)=====$($red)  #      ##### # ### # #   #"
+sleep .2; echo "#  #  # #   # #             #      #   # #  #  # #   #"
+sleep .2; echo "#  #  # #   # \#####        \##### #   # #  #  # \###/"
+sleep .2; echo
+sleep .2; $green; echo "Disguise your MAC Address as that of any manufacturer as you want ($($red)MAC-Camo$($green))"
+sleep .2; $skyBlue; echo "Made by $($red)keeganjk"
+sleep .2; $skyBlue; echo "Version: $($green)1.0"
+sleep .2; echo
+sleep .2; $green; echo "Please report all issues to: $($yellow)https://github.com/keeganjk/mac-camo/issues"
+$stopAllFX; $bgBlack; echo
+
+# Checks if user is root
+override="0"
+if [[ $(whoami) == "root" ]]; then
+  sleep .2; $green; echo "Root successful."
+elif [[ $override == "1" ]]; then
+  sleep .2; $green; echo "Root successful."
+else
+  sleep .2; $white; echo "Sorry, this script must be run as $($bold)root"
+  sleep .4; $stopAllFX; $bgBlack; $yellow; echo "Try using $($bold)sudo"
+  sleep .4; $red; $bold; echo "[!] $($stopAllFX; $bgBlack; $red)EXITING!"
+  $stopAllFX; exit
+fi
+
+function spoofRand() {
+
+  echo "[-] Generating MAC Address"
+  macHalfOne=$( for i in {1..6} ; do echo -n ${hexchars:$(( $RANDOM % 16 )):1} ; done | sed -e 's/\(..\)/:\1/g' )
+  macHalfTwo=$( for i in {1..6} ; do echo -n ${hexchars:$(( $RANDOM % 16 )):1} ; done | sed -e 's/\(..\)/:\1/g' )
+  macAddress=$macHalfOne$macHalfTwo
+  echo "[-] MAC Address generated !"
+
+  $skyBlue; $bold; echo
+  if [[ $(uname -s) ==  "Darwin" ]]; then
+    ifconfig -l
+  else
+    ls /sys/class/net
+  fi
+  $white
+  read -p "[*] $($stopAllFX; $bgBlack; $white)Select an interface: >>> " iface
+  $yellow; echo "[-] $iface selected !"
+  $white; echo  "[-] Disabling $iface ..."
+  ifconfig $iface down
+  ifconfig $iface hw ether $macAddress
+  echo "[-] MAC Address spoofed !"
+  sleep 1
+  echo "[-] Enabling $iface ..."
+  ifconfig $iface up
+  echo "[-] $iface enabled !"
+  echo "[-] Using address: $macAddress"
+  exit
+
+}
+
+function spoofBrowse() {
+
+  echo
+  $skyBlue; awk -F '#' '{printf("%10d %s\n", NR, ":" $1 )}' /usr/bin/oui.txt
+  $bold; $white
+  read -p "[*] $($stopAllFX; $bgBlack; $white)Enter the number code for manufacturer: >>> " num
+  echo "[-] Generating MAC Address"
+  num=$( expr $num - 1 )
+  declare -a array
+  while read -r; do
+    array+=( "$REPLY" )
+  done < addr.txt
+  end=$( for i in {1..6} ; do echo -n ${hexchars:$(( $RANDOM % 16 )):1} ; done | sed -e 's/\(..\)/:\1/g' )
+  macAddress=${array[$num]}$end
+  echo "[-] MAC Address generated !"
+
+  $skyBlue; $bold; echo
+  if [[ $(uname -s) ==  "Darwin" ]]; then
+    ifconfig -l
+  else
+    ls /sys/class/net
+  fi
+  $white
+  read -p "[*] $($stopAllFX; $bgBlack; $white)Select an interface: >>> " iface
+  $yellow; echo "[-] $iface selected !"
+  $white; echo  "[-] Disabling $iface ..."
+  ifconfig $iface down
+  ifconfig $iface hw ether $macAddress
+  echo "[-] MAC Address spoofed !"
+  sleep 1
+  echo "[-] Enabling $iface ..."
+  ifconfig $iface up
+  echo "[-] $iface enabled !"
+  echo "[-] Using address: $macAddress"
+  exit
+
+}
+
+function spoofUseMAC() {
+
+  echo
+  read -p "[*] $($stopAllFX; $bgBlack; $white)Enter the number code for manufacturer: >>> " num
+  echo "[-] Generating MAC Address"
+  num=$( expr $num - 1 )
+  declare -a array
+  while read -r; do
+    array+=( "$REPLY" )
+  done < addr.txt
+  end=$( for i in {1..6} ; do echo -n ${hexchars:$(( $RANDOM % 16 )):1} ; done | sed -e 's/\(..\)/:\1/g' )
+  macAddress=${array[$num]}$end
+  echo "[-] MAC Address generated !"
+  echo "[-] Using address: $macAddress"
+
+  $skyBlue; $bold; echo
+  if [[ $(uname -s) == "Darwin" ]]; then
+    ifconfig -l
+  else
+    ls /sys/class/net
+  fi
+  $white
+  read -p "[*] $($stopAllFX; $bgBlack; $white)Select an interface: >>> " iface
+  $yellow; echo "[-] $iface selected !"
+  $white; echo  "[-] Disabling $iface ..."
+  ifconfig $iface down
+  ifconfig $iface hw ether $macAddress
+  echo "[-] MAC Address spoofed !"
+  sleep 1
+  echo "[-] Enabling $iface ..."
+  ifconfig $iface up
+  echo "[-] $iface enabled !"
+  echo "[-] Using address: $macAddress"
+  exit
+
+}
+
+function spoofSearchAgainOrNot() {
+
+  $bold; $white; echo
+  echo "[*] $($stopAllFX; $bgBlack; $white)Please select an option from the list below:"
+  $yellow; $bold; echo "        [$($white)0$($yellow)] $($stopAllFX; $bgBlack; $white)Search again"
+  $yellow; $bold; echo "        [$($white)1$($yellow)] $($stopAllFX; $bgBlack; $white)Use one of these"
+  read -p ">>> " searchAgainOrNot
+  if [[ "$searchAgainOrNot" == "0" ]]; then
+    spoofSearch
+  elif [[ "$searchAgainOrNot" == "1" ]]; then
+    spoofUseMAC
+  else
+    spoofSearchAgainOrNot
+  fi
+
+}
+
+# Spoof, search option selected
+function spoofSearch() {
+
+  $bold; echo
+  read -p "[*] $($stopAllFX; $bgBlack; $white)Search for a manufacturer: >>> " search
+  $skyBlue; awk -F '#' '{printf("%10d %s\n", NR, ":" $1 )}' /usr/bin/oui.txt | grep -i --color=always $search
+
+  spoofSearchAgainOrNot
+
+}
+
+# Spoof
+function spoof() {
+
+  echo; $white
+  echo "[*] $($stopAllFX; $bgBlack; $white)Please select an option from the list below:"
+  $yellow; $bold; echo "        [$($white)0$($yellow)] $($stopAllFX; $bgBlack; $white)Search for a manufacturer"
+  $yellow; $bold; echo "        [$($white)1$($yellow)] $($stopAllFX; $bgBlack; $white)Browse for a manufacturer through $($bold)long $($stopAllFX; $bgBlack; $white)list"
+  $yellow; $bold; echo "        [$($white)2$($yellow)] $($stopAllFX; $bgBlack; $white)Use a random MAC Address"
+  read -p ">>> " searchOrBrowse
+  if [[ $searchOrBrowse == "0" ]]; then
+    spoofSearch
+  elif [[ $searchOrBrowse == "1" ]]; then
+    spoofBrowse
+  elif [[ $searchoOrBrowse == "2" ]]; then
+    spoofRand
+  else
+    spoof
+  fi
+
+}
+
+# Exit or restart?
+function exitOrRestart() {
+
+  echo "[*] $($stopAllFX; $bgBlack; $white)Please select an option from the list below:"
+  $yellow; $bold; echo "        [$($white)0$($yellow)] $($stopAllFX; $bgBlack; $white)Exit"
+  $yellow; $bold; echo "        [$($white)1$($yellow)] $($stopAllFX; $bgBlack; $white)Restart"
+  read -p ">>> " exitOrRestart
+  if [[ "$exitOrRestart" == "0" ]]; then
+    $red; echo "[!] ABORT !"
+    $stopAllFX; exit
+  elif [[ "$exitOrRestart" == "1" ]]; then
+    $0
+  else
+    exitOrRestart
+  fi
+
+}
+
+# Install
+function install() {
+
+  echo "[-] Installing ..."
+  cp $0 /usr/bin/mac-camo
+  cp $DIR/oui.txt /usr/bin/oui.txt
+  cp $DIR/addr.txt /usr/bin/addr.txt
+  chmod +x /usr/bin/mac-camo
+  echo "[-] Installed !"
+  exitOrRestart
+
+}
+
+# Menu 0
+function menu0() {
+
+  $white; $bold; echo
+  echo "[*] $($stopAllFX; $bgBlack; $white)Please select an option from the list below:"
+  $yellow; $bold; echo "        [$($white)0$($yellow)] $($stopAllFX; $bgBlack; $white)Install"
+  $yellow; $bold; echo "        [$($white)1$($yellow)] $($stopAllFX; $bgBlack; $white)Spoof"
+  read -p ">>> " spoofOrInstall
+  if [[ "$spoofOrInstall" == "0" ]]; then
+    install
+  elif [[ "$spoofOrInstall" == "1" ]]; then
+    spoof
+  else
+    menu0
+  fi
+
+}; menu0
+
+}; start
