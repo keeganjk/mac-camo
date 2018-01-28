@@ -1,5 +1,5 @@
 # mac-camo
-[![Donate Bitcoin](https://img.shields.io/badge/donate-bitcoin-orange.svg)](https://keeganjk.github.io/bitcoin/) <br />
+[![Donate](https://img.shields.io/badge/donate-%24-green.svg)](https://keeganjk.github.io/donate/) <br />
 ![ANSI Art](https://github.com/keeganjk/mac-camo/blob/master/images/ansi-art.jpg "ANSI Art")
   
 ### Supported platforms<sup>0</sup>:
