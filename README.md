@@ -1,5 +1,5 @@
 # mac-camo
-# MOVED TO ![https://gitlab.com/keeganjk/](https://gitlab.com/keeganjk/mac-camo) !
+# MOVED TO ![https://gitlab.com/keeganjk/mac-camo](https://gitlab.com/keeganjk/mac-camo) !
 [![Donate](https://img.shields.io/badge/donate-%24-green.svg)](https://keeganjk.github.io/donate/) <br />
 ![BASh](https://img.shields.io/badge/bash--5A5A5A.svg) ![Stable v1.0](https://img.shields.io/badge/stable-v1.0-orange.svg) <br />
 ![ANSI Art](https://github.com/keeganjk/mac-camo/blob/master/images/ansi-art.jpg "ANSI Art")
