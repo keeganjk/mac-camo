@@ -215,11 +215,11 @@ function spoof() {
   $yellow; $bold; echo "        [$($white)1$($yellow)] $($stopAllFX; $bgBlack; $white)Browse for a manufacturer through $($bold)long $($stopAllFX; $bgBlack; $white)list"
   $yellow; $bold; echo "        [$($white)2$($yellow)] $($stopAllFX; $bgBlack; $white)Use a random MAC Address"
   read -p ">>> " searchOrBrowse
-  if [[ $searchOrBrowse == "0" ]]; then
+  if [[ "$searchOrBrowse" == "0" ]]; then
     spoofSearch
-  elif [[ $searchOrBrowse == "1" ]]; then
+  elif [[ "$searchOrBrowse" == "1" ]]; then
     spoofBrowse
-  elif [[ $searchoOrBrowse == "2" ]]; then
+  elif [[ "$searchoOrBrowse" == "2" ]]; then
     spoofRand
   else
     spoof
